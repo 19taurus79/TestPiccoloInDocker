@@ -1,0 +1,32 @@
+version: '3.9'
+
+services:
+
+  db:
+    container_name: testing_db
+    image: postgres:alpine3.19
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: admin
+      POSTGRES_DB: test_db
+      POSTGRES_PORT: 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  test_app:
+    container_name: test_app
+    image: test_app_image
+    build:
+      context: back
+      dockerfile: Dockerfile
+#    env_file:
+#      - ./.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+volumes:
+  postgres_data:
